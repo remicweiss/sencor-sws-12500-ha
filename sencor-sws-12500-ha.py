@@ -10,7 +10,7 @@ import configparser
 #test run python3 sencor-sws-12500-ha.py <ip> 1883 <mqtt_user> <mqtt_pass> sencor_sws_12500 8080 1
 
 config = configparser.ConfigParser()
-config.read('db.ini')
+config.read('config.ini')
 
 mqtt_ip = config['mqtt']['ip']
 mqtt_port = config['mqtt']['port']
