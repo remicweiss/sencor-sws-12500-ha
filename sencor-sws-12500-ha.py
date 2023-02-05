@@ -30,20 +30,20 @@ client.loop_start()
 init = True
 
 sensors_config ={
-'barom' : '"device_class" : "atmospheric_pressure", "state_class" : "measurement", "unit_of_measurement": "mbar"',
-'temp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
-'dewpt': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
+'baromin' : '"device_class" : "atmospheric_pressure", "state_class" : "measurement", "unit_of_measurement": "mbar"',
+'tempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'dewptf': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
 'humidity': '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
-'windspeed' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
-'windgust' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
+'windspeedmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
+'windgustmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
 'winddir' : '"device_class" : "None"',
-'rain' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
-'dailyrain' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'rainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'dailyrainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
 'solarradiation' : '"device_class" : "irradiance","state_class" :"measurement", "unit_of_measurement": "w/m2"',
 'UV' : ' "device_class" : "None","state_class" :"measurement"',
-'indoortemp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'indoortempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
 'indoorhumidity' : '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
-'soiltemp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'soiltempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
 'soilmoisture' : ' "device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"'
 }
 
