@@ -19,6 +19,7 @@ mqtt_pass = config['mqtt']['pass']
 sensor_name_prefix = config['sensor']['prefix']
 http_port = config['http']['port']
 wunderground = config['wunderground']['proxy']
+units = config['units']['type']
 
 
 client = mqtt.Client()
@@ -29,32 +30,32 @@ client.loop_start()
 init = True
 
 sensors_config ={
-'baromin' : '"device_class" : "atmospheric_pressure", "state_class" : "measurement", "unit_of_measurement": "mbar"',
-'tempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
-'dewptf': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
+'barom' : '"device_class" : "atmospheric_pressure", "state_class" : "measurement", "unit_of_measurement": "mbar"',
+'temp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'dewpt': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
 'humidity': '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
-'windspeedmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
-'windgustmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
+'windspeed' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
+'windgust' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
 'winddir' : '"device_class" : "None"',
-'rainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
-'dailyrainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'rain' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'dailyrain' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
 'solarradiation' : '"device_class" : "irradiance","state_class" :"measurement", "unit_of_measurement": "w/m2"',
 'UV' : ' "device_class" : "None","state_class" :"measurement"',
-'indoortempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'indoortemp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
 'indoorhumidity' : '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
-'soiltempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'soiltemp' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
 'soilmoisture' : ' "device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"'
 }
 
 sensors_units_conversion = {
-'baromin' : lambda x : round(float(x) * 33.86,2),
-'tempf' : lambda x : round((float(x)-32) / 1.8,2),
-'dewptf' : lambda x : round((float(x)-32) / 1.8,2),
-'windspeedmph' : lambda x : round(float(x) * 447.04,1),
-'windgustmph' : lambda x : round(float(x) * 447.04,1),
+'barom' : lambda x : round(float(x) * 33.86,2),
+'temp' : lambda x : round((float(x)-32) / 1.8,2),
+'dewpt' : lambda x : round((float(x)-32) / 1.8,2),
+'windspeed' : lambda x : round(float(x) * 447.04,1),
+'windgust' : lambda x : round(float(x) * 447.04,1),
 'winddir' : lambda x : '"{}"'.format(['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'][int((float(x)+11.25)/22.5)]),
-'indoortempf' : lambda x : round((float(x)-32) / 1.8,2),
-'soiltempf' : lambda x : round((float(x)-32) / 1.8,2)
+'indoortemp' : lambda x : round((float(x)-32) / 1.8,2),
+'soiltemp' : lambda x : round((float(x)-32) / 1.8,2)
 }
 
 class MyServer(BaseHTTPRequestHandler):
@@ -78,7 +79,7 @@ class MyServer(BaseHTTPRequestHandler):
 				if sensor[0] in sensors_config:
 					if init:
 						client.publish("homeassistant/sensor/{}/config".format(sensor_name_prefix + sensor[0]), self.get_config(sensor[0]))
-					if 	sensor[0] in sensors_units_conversion:					
+					if 	sensor[0] in sensors_units_conversion and units=="metric":					
 						send_data += '"{}":{},'.format(sensor[0],sensors_units_conversion[sensor[0]](sensor[1]))
 					else:
 						send_data += '"{}":{},'.format(sensor[0],sensor[1])											
