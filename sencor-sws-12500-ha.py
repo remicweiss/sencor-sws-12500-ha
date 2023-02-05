@@ -24,29 +24,39 @@ init = True
 
 sensors_config ={
 'baromin' : '"device_class" : "atmospheric_pressure"',
-'tempf' : '"device_class" : "temperature"',
-'dewptf': '"device_class" : "temperature"',
-'humidity': '"device_class" : "humidity"',
-'windspeedmph' : '"device_class" : "wind_speed"',
-'windgustmph' : '"device_class" : "wind_speed"',
+'tempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'dewptf': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
+'humidity': '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
+'windspeedmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
+'windgustmph' : '"device_class" : "wind_speed","state_class" :"measurement", "unit_of_measurement": "m/s"',
 'winddir' : '"device_class" : "None"',
-'rainin' : '"device_class" : "distance"',
-'dailyrainin' : '"device_class" : "distance"',
-'solarradiation' : '"device_class" : "irradiance"',
-'UV' : ' "device_class" : "None"',
-'indoortempf' : '"device_class" : "temperature"',
-'indoorhumidity' : '"device_class" : "humidity"',
-'soiltempf' : '"device_class" : "temperature"',
-'soilmoisture' : ' "device_class" : "humidity"'
+'rainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'dailyrainin' : '"device_class" : "distance","state_class" :"measurement", "unit_of_measurement": "mm"',
+'solarradiation' : '"device_class" : "irradiance","state_class" :"measurement", "unit_of_measurement": "w/m2"',
+'UV' : ' "device_class" : "None","state_class" :"measurement"',
+'indoortempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'indoorhumidity' : '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
+'soiltempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
+'soilmoisture' : ' "device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"'
 }
 
+sensors_units_conversion = {
+'baromin' : lambda x : round(float(x) * 33.86,2),
+'tempf' : lambda x : round((float(x)-32) / 1.8,2),
+'dewptf' : lambda x : round((float(x)-32) / 1.8,2),
+'windspeedmph' : lambda x : round(float(x) * 447.04,1),
+'windgustmph' : lambda x : round(float(x) * 447.04,1),
+'winddir' : lambda x : '"{}"'.format(['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'][int((float(x)+11.25)/22.5)]),
+'indoortempf' : lambda x : round((float(x)-32) / 1.8,2),
+'soiltempf' : lambda x : round((float(x)-32) / 1.8,2)
+}
 
 class MyServer(BaseHTTPRequestHandler):
 
 	def get_config(self, sensor):
 		config_data = '{{"name" : "{0}_{1}", "state_topic" : "homeassistant/sensor/{0}/state", "value_template": "{{{{ value_json.{1}}}}}", {2}}}'.format(sensor_name_prefix, sensor, sensors_config[sensor])
 		return config_data
-
+	
 	def do_GET(self):
 		global init
 		send_data = ""
@@ -57,18 +67,17 @@ class MyServer(BaseHTTPRequestHandler):
 
 		if url[0] == "/weatherstation/updateweatherstation.php":
 			data = url[1].split('&')
-		
 			for x in data:
 				sensor = x.split('=')
 				if sensor[0] in sensors_config:
 					if init:
 						client.publish("homeassistant/sensor/{}/config".format(sensor_name_prefix + sensor[0]), self.get_config(sensor[0]))
-					send_data += '"{}":{},'.format(sensor[0],sensor[1])
+					if 	sensor[0] in sensors_units_conversion:					
+						send_data += '"{}":{},'.format(sensor[0],sensors_units_conversion[sensor[0]](sensor[1]))
+					else:
+						send_data += '"{}":{},'.format(sensor[0],sensor[1])											
 			client.publish("homeassistant/sensor/{}/state".format(sensor_name_prefix), "{" + send_data[:-1] + "}")
-		
 		init = False
-
-
 
 if __name__ == "__main__":
     webServer = HTTPServer(('', int(http_port)), MyServer)
