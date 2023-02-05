@@ -56,8 +56,8 @@ sensors_units_conversion = {
 'winddir' : lambda x : '"{}"'.format(['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'][int((float(x)+11.25)/22.5)]),
 'indoortempf' : lambda x : round((float(x)-32) / 1.8,2),
 'soiltempf' : lambda x : round((float(x)-32) / 1.8,2),
-'rainin' : lambda x : x*25.4,
-'dailyrainin' : lambda x : x*25.4
+'rainin' : lambda x : float(x)*25.4,
+'dailyrainin' : lambda x : float(x)*25.4
 }
 
 class MyServer(BaseHTTPRequestHandler):
