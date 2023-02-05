@@ -2,10 +2,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import paho.mqtt.client as mqtt
 import time
 import sys
+import requests
 
 #test command wget -qO- "http://localhost:8080/weatherstation/updateweatherstation.php?ID=55&PASSWORD=asdfghjkl&action=updateraww&realtime=1&rtfreq=5&dateutc=now&baromin=29.91&tempf=74.3&dewptf=41.9&humidity=31&windspeedmph=1.7&windgustmph=1.7&winddir=0&rainin=0.0&dailyrainin=0.0&solarradiation=0.23&UV=0.0&indoortempf=76.8&indoorhumidity=26&soiltempf=73.2&soilmoisture=35" &> /dev/null
 
-#test run python3 sencor-sws-12500-ha.py <ip> 1883 <mqtt_user> <mqtt_pass> sencor_sws_12500 8080
+#test run python3 sencor-sws-12500-ha.py <ip> 1883 <mqtt_user> <mqtt_pass> sencor_sws_12500 8080 1
 
 mqtt_ip = sys.argv[1]
 mqtt_port = sys.argv[2]
@@ -13,6 +14,7 @@ mqtt_user = sys.argv[3]
 mqtt_pass = sys.argv[4]
 sensor_name_prefix = sys.argv[5]
 http_port = sys.argv[6]
+wunderground = sys.argv[7]
 
 
 client = mqtt.Client()
@@ -77,6 +79,8 @@ class MyServer(BaseHTTPRequestHandler):
 					else:
 						send_data += '"{}":{},'.format(sensor[0],sensor[1])											
 			client.publish("homeassistant/sensor/{}/state".format(sensor_name_prefix), "{" + send_data[:-1] + "}")
+			if wunderground:
+				requests.get("https://pws-ingest-use1-01.sun.weather.com/weatherstation/updateweatherstation.php?"+data)
 		init = False
 
 if __name__ == "__main__":
