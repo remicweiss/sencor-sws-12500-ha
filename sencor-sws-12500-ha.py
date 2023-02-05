@@ -48,14 +48,16 @@ sensors_config ={
 }
 
 sensors_units_conversion = {
-'barom' : lambda x : round(float(x) * 33.86,2),
-'temp' : lambda x : round((float(x)-32) / 1.8,2),
-'dewpt' : lambda x : round((float(x)-32) / 1.8,2),
-'windspeed' : lambda x : round(float(x) * 447.04,1),
-'windgust' : lambda x : round(float(x) * 447.04,1),
+'baromin' : lambda x : round(float(x) * 33.86,2),
+'tempf' : lambda x : round((float(x)-32) / 1.8,2),
+'dewptf' : lambda x : round((float(x)-32) / 1.8,2),
+'windspeedmph' : lambda x : round(float(x) * 447.04,1),
+'windgustmph' : lambda x : round(float(x) * 447.04,1),
 'winddir' : lambda x : '"{}"'.format(['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'][int((float(x)+11.25)/22.5)]),
-'indoortemp' : lambda x : round((float(x)-32) / 1.8,2),
-'soiltemp' : lambda x : round((float(x)-32) / 1.8,2)
+'indoortempf' : lambda x : round((float(x)-32) / 1.8,2),
+'soiltempf' : lambda x : round((float(x)-32) / 1.8,2),
+'rainin' : lambda x : x*25.4,
+'dailyrainin' : lambda x : x*25.4
 }
 
 class MyServer(BaseHTTPRequestHandler):
