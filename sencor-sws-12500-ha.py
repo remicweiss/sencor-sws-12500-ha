@@ -80,7 +80,7 @@ class MyServer(BaseHTTPRequestHandler):
 						send_data += '"{}":{},'.format(sensor[0],sensor[1])											
 			client.publish("homeassistant/sensor/{}/state".format(sensor_name_prefix), "{" + send_data[:-1] + "}")
 			if wunderground:
-				requests.get("https://pws-ingest-use1-01.sun.weather.com/weatherstation/updateweatherstation.php?"+data)
+				requests.get("https://pws-ingest-use1-01.sun.weather.com/weatherstation/updateweatherstation.php?"+url[1])
 		init = False
 
 if __name__ == "__main__":
