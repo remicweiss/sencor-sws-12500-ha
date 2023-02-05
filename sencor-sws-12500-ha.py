@@ -23,7 +23,7 @@ client.loop_start()
 init = True
 
 sensors_config ={
-'baromin' : '"device_class" : "atmospheric_pressure"',
+'baromin' : '"device_class" : "atmospheric_pressure", "state_class" : "measurement", "unit_of_measurement": "mbar"',
 'tempf' : '"device_class" : "temperature", "state_class" : "measurement", "unit_of_measurement": "°C"',
 'dewptf': '"device_class" : "temperature", "state_class" :"measurement", "unit_of_measurement": "°C"',
 'humidity': '"device_class" : "humidity","state_class" :"measurement", "unit_of_measurement": "%"',
