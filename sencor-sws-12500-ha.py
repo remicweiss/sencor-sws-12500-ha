@@ -1,13 +1,8 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import paho.mqtt.client as mqtt
-import time
-import sys
-import requests
 import configparser
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-#test command wget -qO- "http://localhost:8080/weatherstation/updateweatherstation.php?ID=55&PASSWORD=asdfghjkl&action=updateraww&realtime=1&rtfreq=5&dateutc=now&baromin=29.91&tempf=74.3&dewptf=41.9&humidity=31&windspeedmph=1.7&windgustmph=1.7&winddir=0&rainin=0.0&dailyrainin=0.0&solarradiation=0.23&UV=0.0&indoortempf=76.8&indoorhumidity=26&soiltempf=73.2&soilmoisture=35" &> /dev/null
-
-#test run python3 sencor-sws-12500-ha.py <ip> 1883 <mqtt_user> <mqtt_pass> sencor_sws_12500 8080 1
+import paho.mqtt.client as mqtt
+import requests
 
 config = configparser.ConfigParser()
 config.read('config.ini')
