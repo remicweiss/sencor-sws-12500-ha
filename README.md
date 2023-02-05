@@ -25,6 +25,6 @@ pip3 install -r requirements.txt
 
 ### 3. Run the script :)
 ```shell
-python3 sencor-sws-12500-ha.txt
+python3 sencor-sws-12500-ha.py
 ```
 
