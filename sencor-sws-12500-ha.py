@@ -1,20 +1,20 @@
+import configparser
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
 import paho.mqtt.client as mqtt
-import time
-import sys
 import requests
 
-#test command wget -qO- "http://localhost:8080/weatherstation/updateweatherstation.php?ID=55&PASSWORD=asdfghjkl&action=updateraww&realtime=1&rtfreq=5&dateutc=now&baromin=29.91&tempf=74.3&dewptf=41.9&humidity=31&windspeedmph=1.7&windgustmph=1.7&winddir=0&rainin=0.0&dailyrainin=0.0&solarradiation=0.23&UV=0.0&indoortempf=76.8&indoorhumidity=26&soiltempf=73.2&soilmoisture=35" &> /dev/null
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-#test run python3 sencor-sws-12500-ha.py <ip> 1883 <mqtt_user> <mqtt_pass> sencor_sws_12500 8080 1
-
-mqtt_ip = sys.argv[1]
-mqtt_port = sys.argv[2]
-mqtt_user = sys.argv[3]
-mqtt_pass = sys.argv[4]
-sensor_name_prefix = sys.argv[5]
-http_port = sys.argv[6]
-wunderground = sys.argv[7]
+mqtt_ip = config['mqtt']['ip']
+mqtt_port = config['mqtt']['port']
+mqtt_user = config['mqtt']['user']
+mqtt_pass = config['mqtt']['pass']
+sensor_name_prefix = config['sensor']['prefix']
+http_port = config['http']['port']
+wunderground = config['wunderground']['proxy']
+units = config['units']['type']
 
 
 client = mqtt.Client()
@@ -50,7 +50,9 @@ sensors_units_conversion = {
 'windgustmph' : lambda x : round(float(x) * 447.04,1),
 'winddir' : lambda x : '"{}"'.format(['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'][int((float(x)+11.25)/22.5)]),
 'indoortempf' : lambda x : round((float(x)-32) / 1.8,2),
-'soiltempf' : lambda x : round((float(x)-32) / 1.8,2)
+'soiltempf' : lambda x : round((float(x)-32) / 1.8,2),
+'rainin' : lambda x : float(x)*25.4,
+'dailyrainin' : lambda x : float(x)*25.4
 }
 
 class MyServer(BaseHTTPRequestHandler):
@@ -74,7 +76,7 @@ class MyServer(BaseHTTPRequestHandler):
 				if sensor[0] in sensors_config:
 					if init:
 						client.publish("homeassistant/sensor/{}/config".format(sensor_name_prefix + sensor[0]), self.get_config(sensor[0]))
-					if 	sensor[0] in sensors_units_conversion:					
+					if 	sensor[0] in sensors_units_conversion and units=="metric":					
 						send_data += '"{}":{},'.format(sensor[0],sensors_units_conversion[sensor[0]](sensor[1]))
 					else:
 						send_data += '"{}":{},'.format(sensor[0],sensor[1])											
